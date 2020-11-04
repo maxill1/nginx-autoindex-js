@@ -22,10 +22,10 @@
                 <li><a href="" ng-click="index.reload()" title="Reload"><i
                             ng-class="{'loader': index.reloading.running || index.loading.running}"
                             class="glyphicon glyphicon-refresh"></i></a></li>
-                <li ng-class="::{'active': $last}" ng-repeat="part in index.path_parts"><span
+                <li ng-class="::{'active': $last}" ng-repeat="part in index.path_parts track by part.name"><span
                         ng-if="::$last">{{:: part.name }} <small
                             ng-if="index.files.length > 5">({{index.files.length}})</small></span><a ng-if="::!$last"
-                        href="#{{:: part.path }}" ng-bind="::part.name"></a></li>
+                        href="#!{{:: part.path }}" ng-bind="::part.name"></a></li>
             </ol>
         </div>
 
@@ -59,9 +59,9 @@
                             <td></td>
                             <td></td>
                         </tr>
-                        <tr ng-repeat="row in index.files | orderBy:index.sort.name:index.sort.rev">
+                        <tr ng-repeat="row in index.files | orderBy:index.sort.name:index.sort.rev track by row.name">
                             <td><a
-                                    href="{{:: row.type == 'directory' ? '#' : index.config.base_index_url }}{{:: index.path }}/{{:: row.name }}"><i
+                                    href="{{:: row.type == 'directory' ? '#!' : index.config.base_index_url }}{{:: index.path }}/{{:: row.name }}"><i
                                         class="glyphicon"
                                         ng-class="::{ 'glyphicon-folder-close': row.type == 'directory', 'glyphicon-file': row.type == 'file', 'glyphicon-question-sign': row.type == 'other' }"></i>
                                     {{:: row.name }}</a></td>
