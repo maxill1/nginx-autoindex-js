@@ -132,12 +132,13 @@ angular.module('index', ['ng'])
                 }).then(function (response) {
                     self.loading.stop();
 
-                    self.config = response.data || {
-                        page_title: "Files Index",
-                        base_index_url: "",
-                        tail_slash: false,
-                        default_sort: { name: null, rev: false }
-                    };
+                    self.config = response.data || {};
+
+                    //default data
+                    self.config.page_title = self.config.page_title || "Files Index";
+                    self.config.base_index_url = self.config.base_index_url || "";
+                    self.config.tail_slash = self.config.tail_slash || false;
+                    self.config.default_sort = self.config.default_sort || { name: null, rev: false }
 
                     self.sort.name = self.config.default_sort.name;
                     self.sort.rev = self.config.default_sort.rev;
