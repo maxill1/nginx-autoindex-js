@@ -1,6 +1,6 @@
 angular.module('index', ['ng'])
-    .controller('IndexController', ['$http', '$location', '$scope', '$window', '$timeout',
-        function ($http, $location, $scope, window, $timeout, FILES_BASE_URL) {
+    .controller('IndexController', ['$log', '$http', '$location', '$scope', '$window', '$timeout',
+        function ($log, $http, $location, $scope, window, $timeout, FILES_BASE_URL) {
             var self = this;
 
             this.config = null;
@@ -94,10 +94,18 @@ angular.module('index', ['ng'])
                     method: 'GET',
                     url: self.config.base_index_url + (path || '') + (self.config.tail_slash ? '/' : '')
                 }).then(function (response) {
-                    var files = response.data || [];
-
-                    for (var i = 0, l = files.length; i < l; i++) {
-                        files[i].mtime = new Date(files[i].mtime);
+                    const contentType = response.headers('Content-type');
+                    var files = []
+                    if (contentType == 'application/json') {
+                        files = response.data || [];
+                        for (var i = 0, l = files.length; i < l; i++) {
+                            files[i].mtime = new Date(files[i].mtime);
+                        }
+                    } else {
+                        self.error = {
+                            statusText: "Response is not json: " + contentType + ", Check your config"
+                        };
+                        $log.error(self.error);
                     }
 
                     self.files = files;
@@ -107,6 +115,7 @@ angular.module('index', ['ng'])
                     window.scrollTo(0, 0);
                 }, function (response) {
                     self.error = response;
+                    $log.error(self.error);
                     self.loading.stop();
                     window.scrollTo(0, 0);
                 });
@@ -159,6 +168,7 @@ angular.module('index', ['ng'])
                 }, function (response) {
                     self.loading.stop();
                     self.error = response;
+                    $log.error(self.error);
                 });
             }
 
